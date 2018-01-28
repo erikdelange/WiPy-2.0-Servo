@@ -19,8 +19,9 @@ servo.duty_cycle(0.10)  # change duty cycle to 10%
 ### Web-interface
 The web interface allows you to experiment with various duty cycle values to figure out the ones for the left- and rightmost positions of the servo. Just enter a value in field *Duty cycle* and press Submit. If the servo still moves you're not yet at the end of its reach. Once you have reached that position then type in the current duty cycle value in field *Minimumum duty cycle* or *Maximum duty cycle*.
 The slider uses the minimum and maximum to move the servo. A bit of javascript ensure moving the slider fires a submit of the sliders value to the server. I did notice that the WiPy sometimes has diffuculty to handle the large number of requests it receives from the slider.
+
 The resulting web page looks like this.
-![](https://github.com/erikdelange/WiPy-2.0-Web-Interface/blob/master/ui.png)
+![](https://github.com/erikdelange/WiPy-2.0-Servo/blob/master/ui.png)
 
 The server code is very simple. It just waits for requests, reads the first line, extracts all the parameters from the URL and stores them in a dictionary (see function *url.extract()*). The rest of the request is discarded. If one or more parameters were sent then these are handled accordingly. In all situations the html form is returned with the current values for all the variables.
 
