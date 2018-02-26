@@ -2,6 +2,8 @@
 #
 # Example GET url: b"GET /?name1=0.07&name2=0.03&name3=0.13 HTTP/1.1\r\n"
 #
+# yields this dict: {'name1': '0.07', 'name2': '0.03', 'name3': '0.13'}
+#
 def extract(request):
     d = dict()
     p = request.find(b"?")
