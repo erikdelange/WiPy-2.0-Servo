@@ -2,8 +2,6 @@
 #
 # Example GET url: b"GET /?name1=0.07&name2=0.03&name3=0.13 HTTP/1.1\r\n"
 #
-# yields this dict: {'name1': '0.07', 'name2': '0.03', 'name3': '0.13'}
-#
 def extract(request):
     d = dict()
     p = request.find(b"?")
@@ -21,3 +19,17 @@ def extract(request):
             if p == -1:
                 break
     return d
+
+
+# Extract the value for a single name=value pair from a GET url
+#
+# Return value is None if name cannot be found in the request
+#
+def find(request, name):
+    value = None
+    n_start = request.find(name.encode("utf-8"))
+    if n_start != -1:
+        v_start = request.find(b"=", n_start) + 1
+        v_end = request.find(b" ", v_start)
+        value = request[v_start:v_end].decode("utf-8")
+    return value
