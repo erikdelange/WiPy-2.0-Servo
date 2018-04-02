@@ -15,7 +15,7 @@ html = """<!DOCTYPE html>
 			<p>Use the slider to move the servo.</p>
 			<br>
 			<form id="slider">
-				<input type="range" id="position" name="position" value={0} oninput="oninputEvent(event)">
+				<input type="range" id="position" name="position" value="%d" oninput="oninputEvent(event)">
 			</form>
 			<br><br>
 			<h2>Calibration</h2>
@@ -23,38 +23,36 @@ html = """<!DOCTYPE html>
 			   servo and enter these in fields Minimum - and Maximum duty cycle.
 			<br>
 			<form id="dutycycle data">
-				<input type="number" id="dutycycle" name="dutycycle" value={1:.3f} min=0 max=1 step=0.001 oninput="oninputEvent(event)">
+				<input type="number" id="dutycycle" name="dutycycle" value="%.3f" min=0 max=1 step=0.001 oninput="oninputEvent(event)">
 				<label for "dutycycle">Duty cycle</label>
 				<br>
-				<input type="number" id="min_dutycycle" name="min_dutycycle" value={2:.3f} min=0 max=1 step=0.001 oninput="oninputEvent(event)">
+				<input type="number" id="min_dutycycle" name="min_dutycycle" value="%.3f" min=0 max=1 step=0.001 oninput="oninputEvent(event)">
 				<label for "min_dutycycle">Minimum duty cycle</label>
 				<br>
-				<input type="number" id="max_dutycycle" name="max_dutycycle" value={3:.3f} min=0 max=1 step=0.001 oninput="oninputEvent(event)">
+				<input type="number" id="max_dutycycle" name="max_dutycycle" value="%.3f" min=0 max=1 step=0.001 oninput="oninputEvent(event)">
 				<label for "max_dutycycle">Maximum duty cycle</label>
 			</form>
 		</div>
 	</body>
 	<script language="javascript">
-		// Beware of the double curly braces. They are needed because I use the
-		// python .format() function in which braces are variable placeholders
-		function oninputEvent(event) {{
+		function oninputEvent(event) {
 			var element = event.target;
 			var xmlhttp = new XMLHttpRequest();
 
-			xmlhttp.onreadystatechange = function() {{
-				if (this.readyState == 4 && this.status == 200) {{
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
 					//console.log(element.id + " oninputEvent: " + this.responseText);
 					if (element.id == "position")
 						document.getElementById("dutycycle").value = parseFloat(this.responseText);
 					if (element.id == "dutycycle")
 						document.getElementById("position").value = parseInt(this.responseText);
-				}}
-			}}
+				}
+			}
 
 			//console.log("?".concat(element.id, "=", element.value));
 			xmlhttp.open("GET", "?".concat(element.id, "=", element.value), true);
 			xmlhttp.send()
-		}}
+		}
 	</script>
 </html>
 """
@@ -115,7 +113,8 @@ if __name__ == "__main__":
 			response = "{0:.3f}".format(max_dutycycle)
 
 		if response is None:
-			response = html.format(position, dutycycle, min_dutycycle, max_dutycycle)
+			# use printf-style formatting to avoid problems with javascript braces
+			response = html % (position, dutycycle, min_dutycycle, max_dutycycle)
 
 		conn.send(response)
 		conn.sendall("\n")
