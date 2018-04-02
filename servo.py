@@ -15,39 +15,39 @@ html = """<!DOCTYPE html>
 			<p>Use the slider to move the servo.</p>
 			<br>
 			<form id="slider">
-				<input type="range" id="position" name="position" value={0} oninput="slider(event)">
+				<input type="range" id="position" name="position" value={0} oninput="oninputEvent(event)">
 			</form>
 			<br><br>
 			<h2>Calibration</h2>
 			<p>Modify field Duty cycle to find the minimum and maximum values for your<br>
-			   servo and enter these in fields Minimum - and Maximum duty cycle.<br>
-			   Press Submit after changing any of these three fields.</p>
+			   servo and enter these in fields Minimum - and Maximum duty cycle.
 			<br>
 			<form id="dutycycle data">
-				<input type="number" id="dutycycle" name="dutycycle" value={1:.3f} min=0 max=1 step=0.001>
+				<input type="number" id="dutycycle" name="dutycycle" value={1:.3f} min=0 max=1 step=0.001 oninput="oninputEvent(event)">
 				<label for "dutycycle">Duty cycle</label>
 				<br>
-				<input type="number" id="min_dutycycle" name="min_dutycycle" value={2:.3f} min=0 max=1 step=0.001>
+				<input type="number" id="min_dutycycle" name="min_dutycycle" value={2:.3f} min=0 max=1 step=0.001 oninput="oninputEvent(event)">
 				<label for "min_dutycycle">Minimum duty cycle</label>
 				<br>
-				<input type="number" id="max_dutycycle" name="max_dutycycle" value={3:.3f} min=0 max=1 step=0.001>
+				<input type="number" id="max_dutycycle" name="max_dutycycle" value={3:.3f} min=0 max=1 step=0.001 oninput="oninputEvent(event)">
 				<label for "max_dutycycle">Maximum duty cycle</label>
-				<br>
-				<input type="submit" value="Submit">
 			</form>
 		</div>
 	</body>
 	<script language="javascript">
 		// Beware of the double curly braces. They are needed because I use the
 		// python .format() function in which braces are variable placeholders
-		function slider(event) {{
+		function oninputEvent(event) {{
 			var element = event.target;
 			var xmlhttp = new XMLHttpRequest();
 
 			xmlhttp.onreadystatechange = function() {{
 				if (this.readyState == 4 && this.status == 200) {{
-					document.getElementById("dutycycle").value = parseFloat(this.responseText);
-					//console.log(this.responseText);
+					//console.log(element.id + " oninputEvent: " + this.responseText);
+					if (element.id == "position")
+						document.getElementById("dutycycle").value = parseFloat(this.responseText);
+					if (element.id == "dutycycle")
+						document.getElementById("position").value = parseInt(this.responseText);
 				}}
 			}}
 
@@ -97,6 +97,7 @@ if __name__ == "__main__":
 			dutycycle = float(d["dutycycle"])
 			position = int((dutycycle - min_dutycycle) / ((max_dutycycle - min_dutycycle) / 100))
 			servo.duty_cycle(dutycycle)
+			response = "{0}".format(min(max(position,0),100))
 
 		if "position" in d:
 			position = int(d["position"])
@@ -107,9 +108,11 @@ if __name__ == "__main__":
 
 		if "min_dutycycle" in d:
 			min_dutycycle = float(d["min_dutycycle"])
+			response = "{0:.3f}".format(min_dutycycle)
 
 		if "max_dutycycle" in d:
 			max_dutycycle = float(d["max_dutycycle"])
+			response = "{0:.3f}".format(max_dutycycle)
 
 		if response is None:
 			response = html.format(position, dutycycle, min_dutycycle, max_dutycycle)

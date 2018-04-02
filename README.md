@@ -17,14 +17,14 @@ servo.duty_cycle(0.10)  # change duty cycle to 10%
 ```
 
 ### Web-interface
-The web interface allows you to experiment with various duty cycle values to figure out the ones for the left- and rightmost positions of your servo. Just enter a value in field *Duty cycle* and press Submit. If the servo still moves you're not yet at the end of its reach. Once you have reached that position then enter the current duty cycle value in field *Minimumum duty cycle* or *Maximum duty cycle*.
-The slider allows you to move the servo between the minimum and maximum. When moving the slider a bit of javascript sends the sliders position to the WiPy (via XMLHttpRequest). Only the new duty cycle is returned and written to field *Duty cycle*. This Ajax setup gives a fast response.
+The web interface allows you to experiment with various duty cycle values to figure out the ones for the left- and rightmost positions of your servo. Just enter a value in field *Duty cycle*. If the servo still moves you're not yet at the end of its reach. Once you have reached that position then enter the current duty cycle value in field *Minimumum duty cycle* or *Maximum duty cycle*.
+The slider allows you to move the servo between the minimum and maximum. The slider and the fields use Ajax to communicate with the WiPy, giving the webpage a fast response.
 
 The resulting web page looks like this.
 
 ![](https://github.com/erikdelange/WiPy-2.0-Servo/blob/master/ui.png)
 
-The server code is very simple. It just waits for requests, reads the first line, extracts all the parameters from the URL and stores them in a dictionary (see function *url.extract()*). The rest of the request is discarded. If one or more parameters were sent then these are handled accordingly. In all situations (except for the sliders Ajax calls) the html form is returned with the current values for all the variables. I've used Bootstrap 4 to make the form look a little bit nicer.
+The server code is very simple. It just waits for requests, reads the first line, extracts all the parameters from the URL and stores them in a dictionary (see function *url.extract()*). The rest of the request is discarded. If one or more parameters were sent then these are handled accordingly. If the request did not contain a parameter at all (in fact only in the first call) the html form is returned with the current values for all the variables. I've used Bootstrap 4 to make the form look a little bit nicer.
 
 If you run servo.py from Pymakr the server prints messages to the console so you can keep track of whats going on. This makes debugging easy. Do not forget to move file url.py to the WiPy first.
 
